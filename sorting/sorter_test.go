@@ -23,6 +23,7 @@ func TestSorter(t *testing.T) {
 		{"Bubble Sort", BubbleSort},
 		{"Merge Sort", MergeSort},
 		{"Quick Sort", QuickSort},
+		{"Radix Sort", RadixSort},
 	} {
 		tmp := make([]int, len(shuffled))
 		copy(tmp, shuffled)
