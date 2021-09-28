@@ -62,7 +62,7 @@ func TestList(t *testing.T) {
 			require.True(t, ok)
 			require.Equal(t, -1, v)
 
-			v, ok = c.list.DeleteAt(c.list.Size()-1)
+			v, ok = c.list.DeleteAt(c.list.Size() - 1)
 			require.True(t, ok)
 			require.Equal(t, 2, v)
 			require.Equal(t, 3, c.list.Size())
@@ -74,7 +74,7 @@ func TestList(t *testing.T) {
 			require.Equal(t, 2, c.list.Size())
 			require.Equal(t, []int{-1, 1}, c.list.Values())
 
-			v, ok = c.list.DeleteAt(c.list.Size()-1)
+			v, ok = c.list.DeleteAt(c.list.Size() - 1)
 			require.True(t, ok)
 			require.Equal(t, 1, v)
 			require.Equal(t, 1, c.list.Size())
