@@ -3,3 +3,6 @@ test:
 
 bench:
 	go test -v -bench=. ./...
+
+clean:
+	rm -rf *.{dot,png,svg}
