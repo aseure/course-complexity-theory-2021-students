@@ -54,3 +54,33 @@ func (t *AVLTree) Display() error {
 
 	return display(start)
 }
+
+func (t *AVLTree) DepthFirstTraversal() (values []int) {
+	if t.root == nil {
+		return
+	}
+	t.root.Accept(func(n *AVLTreeNode) {
+		values = append(values, n.value)
+	})
+	return
+}
+
+func (t *AVLTree) BreadthFirstTraversal() (values []int) {
+	if t.root == nil {
+		return
+	}
+
+	queue := []*AVLTreeNode{t.root}
+
+	for len(queue) > 0 {
+		n := queue[0]
+		queue = queue[1:]
+
+		if n != nil {
+			queue = append(queue, n.left, n.right)
+			values = append(values, n.value)
+		}
+	}
+
+	return
+}

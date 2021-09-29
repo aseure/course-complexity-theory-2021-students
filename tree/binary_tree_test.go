@@ -1,6 +1,7 @@
 package tree
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -22,6 +23,11 @@ func TestBinaryTrees(t *testing.T) {
 				c.tree.Insert(i)
 			}
 			require.Equal(t, nbInserts, c.tree.Size())
+
+			if tree, ok := c.tree.(*AVLTree); ok {
+				fmt.Printf("AVLTree DFS: %v\n", tree.DepthFirstTraversal())
+				fmt.Printf("AVLTree BFS: %v\n", tree.BreadthFirstTraversal())
+			}
 
 			for i := 1; i <= nbInserts; i++ {
 				require.True(t, c.tree.Search(i))
