@@ -1,7 +1,5 @@
 package tree
 
-import "fmt"
-
 type BinarySearchTree struct {
 	root *BinarySearchTreeNode
 }
@@ -38,7 +36,6 @@ func (t *BinarySearchTree) Display() error {
 	start := func(w func(format string, a ...interface{})) {
 		visitor := func(n *BinarySearchTreeNode) {
 			if n.left != nil {
-				fmt.Println("WAT")
 				w("  %d -> %d;\n", n.value, n.left.value)
 			}
 			if n.right != nil {
