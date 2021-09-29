@@ -1,44 +1,41 @@
 package tree
 
-import "fmt"
-
-type BinarySearchTree struct {
-	root *BinarySearchTreeNode
+type AVLTree struct {
+	root *AVLTreeNode
 }
 
-func NewBinarySearchTree() *BinarySearchTree {
-	return &BinarySearchTree{
+func NewAVLTree() *AVLTree {
+	return &AVLTree{
 		root: nil,
 	}
 }
 
-func (t *BinarySearchTree) Size() int {
+func (t *AVLTree) Size() int {
 	return t.root.Size()
 }
 
-func (t *BinarySearchTree) Height() int {
+func (t *AVLTree) Height() int {
 	return t.root.Height()
 }
 
-func (t *BinarySearchTree) Insert(value int) {
+func (t *AVLTree) Insert(value int) {
 	t.root = t.root.Insert(value)
 }
 
-func (t *BinarySearchTree) Remove(value int) bool {
+func (t *AVLTree) Remove(value int) bool {
 	var ok bool
 	t.root, ok = t.root.Remove(value)
 	return ok
 }
 
-func (t *BinarySearchTree) Search(value int) bool {
+func (t *AVLTree) Search(value int) bool {
 	return t.root.Search(value)
 }
 
-func (t *BinarySearchTree) Display() error {
+func (t *AVLTree) Display() error {
 	start := func(w func(format string, a ...interface{})) {
-		visitor := func(n *BinarySearchTreeNode) {
+		visitor := func(n *AVLTreeNode) {
 			if n.left != nil {
-				fmt.Println("WAT")
 				w("  %d -> %d;\n", n.value, n.left.value)
 			}
 			if n.right != nil {
