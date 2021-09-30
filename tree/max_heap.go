@@ -78,7 +78,8 @@ func (h *MaxHeap) Accept(i int, visitor func(int)) {
 func (h *MaxHeap) heapifyUp(i int) {
 	for i > 0 {
 		parent, _, _ := getRelationshipIndices(i)
-		if h.nodes[parent] < h.nodes[i] {
+		isParentSmaller := h.nodes[parent] < h.nodes[i]
+		if isParentSmaller {
 			h.swap(parent, i)
 		}
 		i = parent
