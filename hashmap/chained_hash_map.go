@@ -2,16 +2,11 @@ package hashmap
 
 import (
 	"crypto/sha1"
-	"encoding/binary"
+	"math"
 )
 
 type ChainedHashMap struct {
-	buckets [65536][]ChainedHashMapValue
-}
-
-type ChainedHashMapValue struct {
-	hash  [sha1.Size]byte
-	value string
+	buckets [uint32(math.MaxUint16) + 1][]*HashMapValue
 }
 
 func NewChainedHashMap() *ChainedHashMap {
@@ -19,15 +14,15 @@ func NewChainedHashMap() *ChainedHashMap {
 }
 
 func (h *ChainedHashMap) Add(key, value string) {
-	hash, i := hashKey(key)
-	if v := searchValue(h.buckets[i], hash); v == nil {
-		h.buckets[i] = append(h.buckets[i], ChainedHashMapValue{hash, value})
+	hash, i := hashFunction(key)
+	if v := findHashMapValue(h.buckets[i], hash); v == nil {
+		h.buckets[i] = append(h.buckets[i], newHashMapValue(hash, value))
 	}
 }
 
 func (h *ChainedHashMap) Get(key string) (string, bool) {
-	hash, i := hashKey(key)
-	v := searchValue(h.buckets[i], hash)
+	hash, i := hashFunction(key)
+	v := findHashMapValue(h.buckets[i], hash)
 	if v == nil {
 		return "", false
 	}
@@ -35,8 +30,8 @@ func (h *ChainedHashMap) Get(key string) (string, bool) {
 }
 
 func (h *ChainedHashMap) Remove(key string) (string, bool) {
-	hash, i := hashKey(key)
-	var v *ChainedHashMapValue
+	hash, i := hashFunction(key)
+	var v *HashMapValue
 	h.buckets[i], v = removeValue(h.buckets[i], hash)
 	if v == nil {
 		return "", false
@@ -44,20 +39,14 @@ func (h *ChainedHashMap) Remove(key string) (string, bool) {
 	return v.value, true
 }
 
-func hashKey(key string) ([sha1.Size]byte, uint16) {
-	hash := sha1.Sum([]byte(key))
-	index := binary.BigEndian.Uint16(hash[sha1.Size-2:])
-	return hash, index
-}
-
-func removeValue(values []ChainedHashMapValue, hash [sha1.Size]byte) ([]ChainedHashMapValue, *ChainedHashMapValue) {
+func removeValue(values []*HashMapValue, hash [sha1.Size]byte) ([]*HashMapValue, *HashMapValue) {
 	var index int
-	var found *ChainedHashMapValue = nil
+	var found *HashMapValue = nil
 
 	for i, v := range values {
 		if v.hash == hash {
 			index = i
-			found = &v
+			found = v
 			break
 		}
 	}
@@ -69,10 +58,10 @@ func removeValue(values []ChainedHashMapValue, hash [sha1.Size]byte) ([]ChainedH
 	return append(values[:index], values[index+1:]...), found
 }
 
-func searchValue(values []ChainedHashMapValue, hash [sha1.Size]byte) *ChainedHashMapValue {
+func findHashMapValue(values []*HashMapValue, hash [sha1.Size]byte) *HashMapValue {
 	for _, v := range values {
 		if v.hash == hash {
-			return &v
+			return v
 		}
 	}
 	return nil
