@@ -76,25 +76,26 @@ func (l *DoublyLinkedList) InsertAt(position, value int) bool {
 }
 
 func (l *DoublyLinkedList) DeleteAt(position int) (int, bool) {
-	if l.head == nil || position < 0 {
+	if l.head == nil {
 		return 0, false
 	}
 	if position == 0 {
 		value := l.head.value
-		l.head = l.head.next
-		if l.head != nil {
+		if l.head.next == nil {
+			l.head = nil
+			l.tail = nil
+		} else {
+			l.head = l.head.next
 			l.head.prev = nil
 		}
 		return value, true
 	}
-	prev := l.head
-	for i := 1; i < position && prev != nil; i++ {
+	i, prev := 1, l.head
+	for i < position && prev != nil {
 		prev = prev.next
+		i++
 	}
-	if prev == nil {
-		return 0, false
-	}
-	if prev.next == nil {
+	if prev == nil || prev.next == nil {
 		return 0, false
 	}
 	value := prev.next.value

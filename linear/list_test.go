@@ -34,6 +34,19 @@ func TestList(t *testing.T) {
 			v, ok = c.list.GetAt(0)
 			require.False(t, ok)
 
+			require.True(t, c.list.PushBack(1))
+			require.Equal(t, 1, c.list.Size())
+			require.Equal(t, []int{1}, c.list.Values())
+			v, ok = c.list.GetAt(0)
+			require.True(t, ok)
+			require.Equal(t, 1, v)
+
+			v, ok = c.list.DeleteAt(0)
+			require.Equal(t, 0, c.list.Size())
+			require.Len(t, c.list.Values(), 0)
+			v, ok = c.list.GetAt(0)
+			require.False(t, ok)
+
 			require.True(t, c.list.InsertAt(0, 1))
 			require.Equal(t, 1, c.list.Size())
 			require.Equal(t, []int{1}, c.list.Values())
