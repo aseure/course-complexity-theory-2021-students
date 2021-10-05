@@ -3,9 +3,19 @@ package maze
 import "math/rand"
 
 type Cell struct {
-	neighbors [4]*Cell
-	walls     [4]bool
-	isPath    bool
+	neighbors      [4]*Cell
+	walls          [4]bool
+	mark           Mark
+	screenshotFunc func()
+}
+
+func newCell(screenshotFunc func()) *Cell {
+	return &Cell{
+		neighbors:      [4]*Cell{},
+		walls:          [4]bool{},
+		mark:           0,
+		screenshotFunc: screenshotFunc,
+	}
 }
 
 func (c *Cell) connect(d Direction, neighbor *Cell) {
@@ -25,7 +35,7 @@ func (c *Cell) removeWall(d Direction) {
 	}
 }
 
-func (c *Cell) isWall(d Direction) bool {
+func (c *Cell) IsWall(d Direction) bool {
 	return c == nil || map[Direction]bool{
 		Top:    c.neighbors[0] == nil || c.walls[0],
 		Bottom: c.neighbors[1] == nil || c.walls[1],
@@ -44,4 +54,13 @@ func (c *Cell) GetRandomizedNeighbors() map[Direction]*Cell {
 	}
 
 	return neighbors
+}
+
+func (c *Cell) GetMark() Mark {
+	return c.mark
+}
+
+func (c *Cell) SetMark(m Mark) {
+	c.mark = m
+	c.screenshotFunc()
 }

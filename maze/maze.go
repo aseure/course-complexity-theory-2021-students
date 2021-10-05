@@ -1,6 +1,7 @@
 package maze
 
 import (
+	"image/gif"
 	"math/rand"
 )
 
@@ -10,30 +11,37 @@ type Maze struct {
 	wallThickness int
 	cellThickness int
 	cells         [][]*Cell
+	img           *gif.GIF
 }
 
-func NewMaze(width, height, wallThickness, cellThickness int) *Maze {
+func NewMaze(width, height int, generateAnimation bool) *Maze {
 	rand.Seed(int64(width * height))
 
 	m := &Maze{
 		width:         width,
 		height:        height,
-		wallThickness: wallThickness,
-		cellThickness: cellThickness,
+		wallThickness: 4,
+		cellThickness: 40,
 		cells:         make([][]*Cell, height),
+		img:           new(gif.GIF),
+	}
+
+	screenshotFn := m.takeScreenshot
+	if !generateAnimation {
+		screenshotFn = func() {}
 	}
 
 	for row := 0; row < height; row++ {
 		var rowCells []*Cell
 		for column := 0; column < width; column++ {
-			rowCells = append(rowCells, &Cell{})
+			rowCells = append(rowCells, newCell(screenshotFn))
 		}
 		m.cells[row] = rowCells
 	}
 
 	for row := 0; row < m.height; row++ {
 		for column := 0; column < m.width; column++ {
-			c, right, bottom := m.cell(column, row), m.cell(column+1, row), m.cell(column, row+1)
+			c, right, bottom := m.Cell(column, row), m.Cell(column+1, row), m.Cell(column, row+1)
 			c.connect(Right, right)
 			c.connect(Bottom, bottom)
 		}
@@ -44,15 +52,24 @@ func NewMaze(width, height, wallThickness, cellThickness int) *Maze {
 	return m
 }
 
+func (m *Maze) Width() int {
+	return m.width
+}
+
+func (m *Maze) Height() int {
+	return m.height
+}
+
 func (m *Maze) Reset() {
 	for row := 0; row < m.height; row++ {
 		for column := 0; column < m.width; column++ {
-			m.cell(row, column).isPath = false
+			m.Cell(row, column).SetMark(Blank)
 		}
 	}
+	m.img = new(gif.GIF)
 }
 
-func (m *Maze) cell(column, row int) *Cell {
+func (m *Maze) Cell(column, row int) *Cell {
 	if column < 0 || m.width <= column ||
 		row < 0 || m.height <= row {
 		return nil
