@@ -21,9 +21,11 @@ func TestSorter(t *testing.T) {
 		sorter Sorter
 	}{
 		{"Bubble Sort", BubbleSort},
+		{"Weird Sort", WeirdSort},
 		{"Merge Sort", MergeSort},
 		{"Quick Sort", QuickSort},
 		{"Radix Sort", RadixSort},
+		{"Counting Sort", CountingSort},
 	} {
 		tmp := make([]int, len(shuffled))
 		copy(tmp, shuffled)
