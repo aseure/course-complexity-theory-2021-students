@@ -63,7 +63,7 @@ func (m *Maze) Height() int {
 func (m *Maze) Reset() {
 	for row := 0; row < m.height; row++ {
 		for column := 0; column < m.width; column++ {
-			m.Cell(row, column).SetMark(Blank)
+			m.Cell(column, row).SetMark(Blank)
 		}
 	}
 	m.img = new(gif.GIF)

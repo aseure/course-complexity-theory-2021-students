@@ -11,7 +11,7 @@ import (
 )
 
 func TestMaze(t *testing.T) {
-	width, height := 100, 100
+	width, height := 200, 200
 
 	m := maze.NewMaze(width, height, false)
 	m.Generate()
@@ -23,11 +23,10 @@ func TestMaze(t *testing.T) {
 		solver Solver
 	}{
 		{"Backtracking solver", BacktrackingSolver},
-		{"Dijkstra solver", DijkstraSolver},
 	} {
 		m.Reset()
 		start := time.Now()
-		c.solver(m, begin, end)
+		c.solver(begin, end)
 		fmt.Printf("%s took %s\n", c.name, time.Since(start))
 		require.NoError(t, m.Display())
 	}

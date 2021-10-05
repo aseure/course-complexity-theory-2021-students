@@ -2,10 +2,10 @@ package solvers
 
 import "github/aseure/course-complexity-theory-2021/maze"
 
-func BacktrackingSolver(m *maze.Maze, start, end *maze.Cell) {
+func BacktrackingSolver(start, end *maze.Cell) {
 	start.SetMark(maze.Visiting)
+	defer start.SetMark(maze.Path)
 	_ = backtrackingSolver(start, end)
-	start.SetMark(maze.Path)
 }
 
 func backtrackingSolver(start, end *maze.Cell) bool {
