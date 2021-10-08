@@ -30,10 +30,12 @@ func NewOpenAddressingHashMap() *OpenAddressingHashMap {
 
 func (h *OpenAddressingHashMap) Add(key, value string) {
 	hash, i := hashFunction(key)
-	for h.buckets[i] != nil {
+	for h.buckets[i] != nil && (!h.buckets[i].deleted || h.buckets[i].hash != hash || h.buckets[i].key != key) {
 		i++
 	}
-	h.buckets[i] = newHashMapValue(hash, key, value)
+	if h.buckets[i] == nil || h.buckets[i].deleted {
+		h.buckets[i] = newHashMapValue(hash, key, value)
+	}
 }
 
 func (h *OpenAddressingHashMap) Get(key string) (string, bool) {
