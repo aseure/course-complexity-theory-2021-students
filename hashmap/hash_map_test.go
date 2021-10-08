@@ -15,7 +15,7 @@ func TestHashMap(t *testing.T) {
 	}
 
 	var pairs []KeyValuePair
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10000; i++ {
 		pairs = append(pairs, KeyValuePair{time.Now().String(), strconv.Itoa(i)})
 	}
 

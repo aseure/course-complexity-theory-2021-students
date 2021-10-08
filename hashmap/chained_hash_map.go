@@ -6,7 +6,21 @@ import (
 )
 
 type ChainedHashMap struct {
-	buckets [uint32(math.MaxUint16) + 1][]*HashMapValue
+	buckets [uint32(math.MaxUint16) + 1][]*ChainedHashMapValue
+}
+
+type ChainedHashMapValue struct {
+	hash  [sha1.Size]byte
+	key   string
+	value string
+}
+
+func newChainedHashMapValue(hash [sha1.Size]byte, key, value string) *ChainedHashMapValue {
+	return &ChainedHashMapValue{
+		hash:  hash,
+		key:   key,
+		value: value,
+	}
 }
 
 func NewChainedHashMap() *ChainedHashMap {
@@ -15,14 +29,14 @@ func NewChainedHashMap() *ChainedHashMap {
 
 func (h *ChainedHashMap) Add(key, value string) {
 	hash, i := hashFunction(key)
-	if v := findHashMapValue(h.buckets[i], hash); v == nil {
-		h.buckets[i] = append(h.buckets[i], newHashMapValue(hash, value))
+	if v := findChainedHashMapValue(h.buckets[i], hash); v == nil {
+		h.buckets[i] = append(h.buckets[i], newChainedHashMapValue(hash, key, value))
 	}
 }
 
 func (h *ChainedHashMap) Get(key string) (string, bool) {
 	hash, i := hashFunction(key)
-	v := findHashMapValue(h.buckets[i], hash)
+	v := findChainedHashMapValue(h.buckets[i], hash)
 	if v == nil {
 		return "", false
 	}
@@ -31,17 +45,17 @@ func (h *ChainedHashMap) Get(key string) (string, bool) {
 
 func (h *ChainedHashMap) Remove(key string) (string, bool) {
 	hash, i := hashFunction(key)
-	var v *HashMapValue
-	h.buckets[i], v = removeValue(h.buckets[i], hash)
+	var v *ChainedHashMapValue
+	h.buckets[i], v = removeChainedHashMapValue(h.buckets[i], hash)
 	if v == nil {
 		return "", false
 	}
 	return v.value, true
 }
 
-func removeValue(values []*HashMapValue, hash [sha1.Size]byte) ([]*HashMapValue, *HashMapValue) {
+func removeChainedHashMapValue(values []*ChainedHashMapValue, hash [sha1.Size]byte) ([]*ChainedHashMapValue, *ChainedHashMapValue) {
 	var index int
-	var found *HashMapValue = nil
+	var found *ChainedHashMapValue = nil
 
 	for i, v := range values {
 		if v.hash == hash {
@@ -58,7 +72,7 @@ func removeValue(values []*HashMapValue, hash [sha1.Size]byte) ([]*HashMapValue,
 	return append(values[:index], values[index+1:]...), found
 }
 
-func findHashMapValue(values []*HashMapValue, hash [sha1.Size]byte) *HashMapValue {
+func findChainedHashMapValue(values []*ChainedHashMapValue, hash [sha1.Size]byte) *ChainedHashMapValue {
 	for _, v := range values {
 		if v.hash == hash {
 			return v
